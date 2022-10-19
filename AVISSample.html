@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>AVIS Browser</title>
+<style>
+body {
+    background-color: honeydew;
+    text-align: center;
+}
+fieldset {
+  margin: 20px;
+  padding: 10px 10px 10px;
+  border: 1px solid #666;
+  border-radius: 8px;
+  box-shadow: 0 0 10px #666;
+}
+legend {
+  padding: 0px 10px 0px 10px;
+  text-shadow: #fff 0 0 10px,#fff 0 0 10px,#fff 0 0 10px;
+}
+fieldset > legend {
+  float: left;
+  margin-top: -20px;
+  color:blue;
+  font-weight:bold;
+}
+fieldset > legend + * {
+  clear: both;
+}
+#vitalSign {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+}
+#vitalSign div{
+    text-align: center;
+}
+.comment {
+    font-size: 10px;
+}
+</style>
+<script type="text/javascript" src="AVISSample.js"></script>
+<script type="text/javascript">
+
+function AVISStart() {
+    // Start receving vital signs.
+    ReceiverInstance.start()
+    document.getElementById("AVISStart").disabled = true;
+    document.getElementById("AVISStop").disabled = false;
+}
+
+function AVISStop() {
+    // Stop receving vital signs.
+    ReceiverInstance.stop()
+    document.getElementById("AVISStart").disabled = true;
+    document.getElementById("AVISStop").disabled = false;
+}
+
+// Get license request Key of this device.
+function getRequestLicense() {
+    ReceiverInstance.getRequestLicense().then(request => {
+        document.getElementById("requestLicense").value = request;
+    });
+}
+
+// Get list of licenses on this device.
+function getLicenseList() {
+    ReceiverInstance.getLicenseList().then(licenseList => {
+        var text = ""
+        for (const license of licenseList) {
+            text = text + JSON.stringify(license) + "\r\n";
+        }
+        document.getElementById("licenseList").value = text;
+    });
+}
+
+// Add new license key to this device.
+function addLicense() {
+    var license = document.getElementById("license").value;
+    ReceiverInstance.addLicense(license).then(result => {
+        document.getElementById("licenseList").value = result;
+    });
+}
+
+// Reveal AVIS Status.
+function Start() {
+    if (ReceiverInstance.isLoaded()) {
+        document.getElementById("hasAVIS").innerText = "AVIS is loaded.";
+        ReceiverInstance.getSerialNumber().then(serial => {
+            document.getElementById("AVISSerial").innerText = "AVIS Serial: "+serial;
+        })
+    } else {
+        //document.getElementById("hasAVIS").innerText = "AVIS is NOT loaded.";
+        a = 15;
+        b = 16;
+        info = {"cuff":true,"diastole":80,"type":"BloodPressure","systole":121};
+        document.getElementById("bloodpressure").value = info.systole.toString() + "/" + info.diastole.toString();
+    }
+}
+</script>
+</head>
+<body onload="Start()">
+
+<h1>AVIS Browser Test</h1>
+<fieldset style="text-align:left;">
+    <legend>AVIS Status</legend>
+    <div id="hasAVIS">AVIS Status</div>
+    <div id="AVISSerial">AVIS Serial: Unknown</div>
+    <button id="AVISStart" onclick="AVISStart()">AVIS Start</button><br/>
+    <button id="AVISStop" onclick="AVISStop()" disabled>AVIS Stop</button><br/>
+</fieldset>
+<fieldset style="text-align:left;">
+    <legend>Vital Sign</legend>
+    <div id="vitalSign">
+        <div>
+            <label for="temperature">Body Temperature:</label>
+            <input type="number" id="temperature" name="temperature" placeholder="Body Temperature">
+            <span>℃</span>
+        </div>
+        <div>
+            <label for="bloodpressure">Blood Pressure:</label>
+            <input type="text" id="bloodpressure" name="bloodpressure" placeholder="Blood Pressure" pattern="^\d{1,3}\/\d{1,3}$" required>
+            <span>㎜㋌</span>
+        </div>
+        <div>
+            <label for="pulse">Pulse:</label>
+            <input type="number" id="pulse" name="pulse" placeholder="Pulse">
+            <span>BPM</span>
+        </div>
+        <div>
+            <label for="spo2">SpO2:</label>
+            <input type="number" id="spo2" name="spo2" placeholder="Oxygen Saturation">
+            <span>％</span>
+        </div>
+        <div>
+            <label for="glucose">Glucose:</label>
+            <input type="number" id="glucose" name="glucose" placeholder="Glucose">
+            <span>㎎/㎗</span>
+        </div>
+        <div>
+            <label for="weight">Weight:</label>
+            <input type="number" id="weight" name="weight" placeholder="Body Weight">
+            <span>㎏</span>
+        </div>
+    </div>
+</fieldset>
+<fieldset style="text-align:left;">
+    <legend>License Manager</legend>
+    <div>
+        <button onclick="getRequestLicense()">Get License Request Key</button>
+        <label for="requestLicense">Request License Key:</label>
+        <textarea type="text" id="requestLicense" style="width:100%;" name="requestLicense" disabled></textarea><br/>
+        <div class="comment">Web App developers can request dedicated license to this device with this request key.</div><br/>
+
+        <button onclick="getLicenseList()">Get License List</button><br/>
+        <textarea type="text" id="licenseList" style="width:100%;" name="licenseList" disabled></textarea><br/>
+
+        <button onclick="addLicense()">Add License</button>
+        <textarea type="text" id="license" style="width:100%;" name="license"></textarea>
+    </div>
+</fieldset>
+</html>
