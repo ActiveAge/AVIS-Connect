@@ -52,8 +52,8 @@ function AVISStart() {
 function AVISStop() {
     // Stop receving vital signs.
     ReceiverInstance.stop()
-    document.getElementById("AVISStart").disabled = true;
-    document.getElementById("AVISStop").disabled = false;
+    document.getElementById("AVISStart").disabled = false;
+    document.getElementById("AVISStop").disabled = true;
 }
 
 // Get license request Key of this device.
