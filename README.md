@@ -1,9 +1,9 @@
-# AVIS Browser?
+# AVIS Connect?
 It is not easy to connent to bluetooth device from Web-based Application as lacking hardware instruction support.
 But for most EMR systems, vital-sign will be read via bluetooth devices, lacking of bluetooth support might lead inconvience and ineffencience, not mention about risk of typing error.
-AVIS Browser provides a solutuon to web-based EMR or nursing system. It reads vital-sign from varities of vital-sign equipments, then transfer them into simple APIs for developer to intergrate.
+AVIS Connect provides a solutuon to web-based EMR or nursing system. It reads vital-sign from varities of vital-sign equipments, then transfer them into simple APIs for developer to intergrate.
 
-## How to integrate AVIS browser?
+## How to integrate AVIS Connect?
 It will be as easy as embedding following javascript codes into your system.
 Please refer to AVISSample.html, AVISSample.js for full sample.
 ```JavaScript
